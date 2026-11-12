@@ -6,9 +6,9 @@ import { MobileNav } from "@/components/mobile-nav";
 
 export const navLinks = [
   { label: "Home", href: "/", active: true },
-  { label: "Destinations", href: "#destinations", active: false },
+  { label: "Destinations", href: "/add-destinations", active: false },
   { label: "My Bookings", href: "#bookings", active: false },
-  { label: "Admin", href: "#admin", active: false },
+  { label: "Admin", href: "/admin", active: false },
 ];
 
 export function Navbar() {
