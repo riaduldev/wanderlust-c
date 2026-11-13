@@ -50,6 +50,17 @@ Travel landing site ("Wanderlust"), built with the Next.js 16.4 App Router. Fron
 - Brand teal is `#15a1bf` (sampled from the logo) and is exposed as the `brand` / `brand-dark` color tokens in `globals.css` — use `bg-brand` / `text-brand` instead of hardcoding hex.
 - The landing page is being built top-down: `src/components/navbar.tsx` (+ `mobile-nav.tsx` client island), `src/components/banner.tsx`, `src/components/why-choose-us.tsx`, `src/components/testimonials.tsx` (embla carousel), `src/components/call-to-action.tsx` and `src/components/footer.tsx` exist; the rest of the page is not built yet.
 - `public/images/Wanderlast.png` is the low-res teal wordmark (nav, 162×24) and `Wanderlast-1.png` is the high-res white one (542×80) used in the footer. Lucide v1 dropped brand icons, so the footer's X/LinkedIn/Instagram glyphs are inline SVGs in `footer.tsx`.
-- Routes: `/` (landing page), `/admin` ("Add New Travel Package" form → `src/components/admin/add-travel-package-form.tsx`, client component using shadcn `Field`/`Input`/`Select`/`Textarea` + the base-ui toast manager), `/add-destinations` (stub). `Navbar`/`Footer` live in the root layout, so every route gets them.
+- Routes: `/` (landing page), `/add-destinations` (the "Add New Travel Package" form → `src/components/add-travel-package-form.tsx`, client component using shadcn `Field`/`Input`/`Select`/`Textarea` + the base-ui toast manager), `/admin` (intentionally empty placeholder). `Navbar`/`Footer`/`Toaster` live in the root layout, so every route gets them — mount `Toaster` only once.
 - `src/components/ui/carousel.tsx` (embla) exposes `Carousel`/`CarouselContent`/`CarouselItem`/`CarouselPrevious`/`CarouselNext`; `CarouselPrevious`/`CarouselNext` read context, so they must be rendered **inside** `<Carousel>` — override their default absolute positioning with `static` to place them in a header row.
+
+## Database (MongoDB)
+
+- `mongoose` is installed (both `mongoose` and `mongodb` are in Next's default `serverExternalPackages`, so no `serverExternalPackages` config is needed).
+- Env: `MONGODB_URI` (required) and optional `MONGODB_DB` — see `.env.example`; put real values in `.env.local` (gitignored).
+- `src/lib/mongodb.ts` — cached connection singleton (`globalThis` cache survives dev hot-reload); `connectToDatabase()` throws a clear error when `MONGODB_URI` is missing.
+- `src/models/travel-package.ts` — mongoose schema/model (`travel-packages` collection, `timestamps: true`); the model is re-used via `mongoose.models.TravelPackage ?? mongoose.model(...)` to avoid dev re-registration errors.
+- `src/lib/travel-package.ts` — shared categories + server-side validation (`parseTravelPackageInput`), used by both the client form and the API route.
+- `src/app/api/travel-packages/route.ts` — `POST` creates a package (400 bad JSON, 422 validation, 503 DB not configured/unreachable, 201 created) and `GET` lists the 100 newest. Both call `await connection()` first so `cacheComponents` never prerenders them at build time.
+- Without `MONGODB_URI` the API returns 503 and the form shows an error toast; the UI never talks to MongoDB directly.
+
 

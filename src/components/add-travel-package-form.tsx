@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { Save, Trash2 } from "lucide-react";
+import { Loader2, Save, Trash2 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
@@ -15,41 +15,103 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "@/components/ui/toast";
-
-const categories = [
-  "Beach",
-  "Mountain",
-  "City Break",
-  "Adventure",
-  "Cultural",
-  "Desert",
-  "Island",
-  "Wildlife",
-];
+import {
+  TRAVEL_PACKAGE_CATEGORIES,
+  type TravelPackageCategory,
+  type TravelPackageInput,
+} from "@/lib/travel-package";
 
 const fieldClassName =
   "h-9 rounded-md border-transparent bg-muted/60 placeholder:text-muted-foreground";
 
 export function AddTravelPackageForm() {
   const formRef = React.useRef<HTMLFormElement>(null);
-  const [category, setCategory] = React.useState("Beach");
+  const [category, setCategory] = React.useState<string>("Beach");
+  const [isSubmitting, setIsSubmitting] = React.useState(false);
 
-  function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-
-    toast.add({
-      title: "Travel package added",
-      description: "The new package is now available in your catalogue.",
-      type: "success",
-    });
-
+  function resetForm() {
     formRef.current?.reset();
     setCategory("Beach");
   }
 
+  
+async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+  event.preventDefault();
+
+  // 1. Start loading
+  setIsSubmitting(true);
+
+  try {
+    // 2. Collect all form data
+    const formData = new FormData(event.currentTarget);
+
+    // 3. Convert FormData into object
+    const payload: TravelPackageInput = {
+      destinationName: String(formData.get("destinationName") ?? ""),
+      country: String(formData.get("country") ?? ""),
+      category: category as TravelPackageCategory,
+      price: Number(formData.get("price") ?? 0),
+      duration: String(formData.get("duration") ?? ""),
+      departureDate: String(formData.get("departureDate") ?? ""),
+      imageUrl: String(formData.get("imageUrl") ?? ""),
+      description: String(formData.get("description") ?? ""),
+    };
+
+    console.log("Sending data:", payload);
+
+    // 4. Send data to Express backend
+    const response = await fetch("http://localhost:8000/add-destination", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    });
+
+    // 5. Get server response
+    const data = await response.json();
+
+    console.log("Server response:", data);
+
+    // 6. Check response
+    if (!response.ok) {
+      toast.add({
+        title: "Could not add the package",
+        description: data.message ?? "Please try again.",
+        type: "error",
+      });
+
+      return;
+    }
+
+    // 7. Success message
+    toast.add({
+      title: "Travel package added",
+      description: "Your package has been added successfully.",
+      type: "success",
+    });
+
+    // 8. Reset form
+    resetForm();
+
+  } catch (error) {
+    console.error("Submit error:", error);
+
+    toast.add({
+      title: "Could not add the package",
+      description: "The server could not be reached. Please try again.",
+      type: "error",
+    });
+
+  } finally {
+    // 9. Stop loading
+    setIsSubmitting(false);
+  }
+}
+
+
   function handleCancel() {
-    formRef.current?.reset();
-    setCategory("Beach");
+    resetForm();
 
     toast.add({
       title: "Form cleared",
@@ -104,7 +166,7 @@ export function AddTravelPackageForm() {
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                {categories.map((item) => (
+                {TRAVEL_PACKAGE_CATEGORIES.map((item) => (
                   <SelectItem key={item} value={item}>
                     {item}
                   </SelectItem>
@@ -190,6 +252,7 @@ export function AddTravelPackageForm() {
           type="button"
           variant="outline"
           onClick={handleCancel}
+          disabled={isSubmitting}
           className="border-destructive/40 text-destructive hover:bg-destructive/10 hover:text-destructive h-9 w-full rounded-none sm:w-auto"
         >
           <Trash2 className="size-4" />
@@ -197,10 +260,15 @@ export function AddTravelPackageForm() {
         </Button>
         <Button
           type="submit"
+          disabled={isSubmitting}
           className="bg-brand hover:bg-brand-dark text-white h-9 w-full rounded-none sm:w-auto"
         >
-          <Save className="size-4" />
-          Add Travel Package
+          {isSubmitting ? (
+            <Loader2 className="size-4 animate-spin" />
+          ) : (
+            <Save className="size-4" />
+          )}
+          {isSubmitting ? "Saving..." : "Add Travel Package"}
         </Button>
       </div>
     </form>

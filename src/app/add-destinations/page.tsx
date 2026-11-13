@@ -1,11 +1,15 @@
-import React from 'react';
+import { AddTravelPackageForm } from "@/components/add-travel-package-form";
 
-const AddDestinationsPage = () => {
-    return (
-        <div>
-            <h1>Add Destination Page</h1>
-        </div>
-    );
-};
+export default function AddDestinationsPage() {
+  return (
+    <div className="bg-background w-full">
+      <div className="mx-auto w-full max-w-[1400px] px-4 py-10 sm:px-6 lg:px-10">
+        <h1 className="font-heading text-foreground font-light text-3xl">
+          Add New Travel Package
+        </h1>
 
-export default AddDestinationsPage;
+        <AddTravelPackageForm />
+      </div>
+    </div>
+  );
+}
