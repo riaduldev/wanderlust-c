@@ -16,10 +16,14 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "@/components/ui/toast";
 import {
+  parseTravelPackageInput,
   TRAVEL_PACKAGE_CATEGORIES,
   type TravelPackageCategory,
   type TravelPackageInput,
 } from "@/lib/travel-package";
+
+const API_BASE_URL =
+  process.env.NEXT_PUBLIC_DESTINATIONS_API_URL ?? "http://localhost:8000";
 
 const fieldClassName =
   "h-9 rounded-md border-transparent bg-muted/60 placeholder:text-muted-foreground";
@@ -34,81 +38,71 @@ export function AddTravelPackageForm() {
     setCategory("Beach");
   }
 
-  
-async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
-  event.preventDefault();
+  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    setIsSubmitting(true);
 
-  // 1. Start loading
-  setIsSubmitting(true);
+    try {
+      const formData = new FormData(event.currentTarget);
+      const payload: TravelPackageInput = {
+        destinationName: String(formData.get("destinationName") ?? ""),
+        country: String(formData.get("country") ?? ""),
+        category: category as TravelPackageCategory,
+        price: Number(formData.get("price") ?? 0),
+        duration: String(formData.get("duration") ?? ""),
+        departureDate: String(formData.get("departureDate") ?? ""),
+        imageUrl: String(formData.get("imageUrl") ?? ""),
+        description: String(formData.get("description") ?? ""),
+      };
 
-  try {
-    // 2. Collect all form data
-    const formData = new FormData(event.currentTarget);
+      const parsed = parseTravelPackageInput(payload);
 
-    // 3. Convert FormData into object
-    const payload: TravelPackageInput = {
-      destinationName: String(formData.get("destinationName") ?? ""),
-      country: String(formData.get("country") ?? ""),
-      category: category as TravelPackageCategory,
-      price: Number(formData.get("price") ?? 0),
-      duration: String(formData.get("duration") ?? ""),
-      departureDate: String(formData.get("departureDate") ?? ""),
-      imageUrl: String(formData.get("imageUrl") ?? ""),
-      description: String(formData.get("description") ?? ""),
-    };
+      if (!parsed.ok) {
+        toast.add({
+          title: "Check the form",
+          description:
+            Object.values(parsed.errors)[0] ?? "Some fields are invalid.",
+          type: "error",
+        });
+        return;
+      }
 
-    console.log("Sending data:", payload);
-
-    // 4. Send data to Express backend
-    const response = await fetch("http://localhost:8000/add-destination", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(payload),
-    });
-
-    // 5. Get server response
-    const data = await response.json();
-
-    console.log("Server response:", data);
-
-    // 6. Check response
-    if (!response.ok) {
-      toast.add({
-        title: "Could not add the package",
-        description: data.message ?? "Please try again.",
-        type: "error",
+      const response = await fetch(`${API_BASE_URL}/add-destination`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
       });
 
-      return;
+      const data = await response.json().catch(() => null);
+
+      if (!response.ok) {
+        toast.add({
+          title: "Could not add the package",
+          description: data?.message ?? "Please try again.",
+          type: "error",
+        });
+        return;
+      }
+
+      toast.add({
+        title: "Travel package added",
+        description: "Your package has been added successfully.",
+        type: "success",
+      });
+
+      resetForm();
+    } catch {
+      toast.add({
+        title: "Could not add the package",
+        description: "The server could not be reached. Please try again.",
+        type: "error",
+      });
+    } finally {
+      setIsSubmitting(false);
     }
-
-    // 7. Success message
-    toast.add({
-      title: "Travel package added",
-      description: "Your package has been added successfully.",
-      type: "success",
-    });
-
-    // 8. Reset form
-    resetForm();
-
-  } catch (error) {
-    console.error("Submit error:", error);
-
-    toast.add({
-      title: "Could not add the package",
-      description: "The server could not be reached. Please try again.",
-      type: "error",
-    });
-
-  } finally {
-    // 9. Stop loading
-    setIsSubmitting(false);
   }
-}
-
 
   function handleCancel() {
     resetForm();

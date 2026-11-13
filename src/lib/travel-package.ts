@@ -11,6 +11,53 @@ export const TRAVEL_PACKAGE_CATEGORIES = [
 
 export type TravelPackageCategory = (typeof TRAVEL_PACKAGE_CATEGORIES)[number];
 
+export const TRAVEL_PACKAGE_SORTS = [
+  "recommended",
+  "price-asc",
+  "price-desc",
+  "rating",
+  "name",
+] as const;
+
+export type TravelPackageSort = (typeof TRAVEL_PACKAGE_SORTS)[number];
+
+export const TRAVEL_PACKAGE_SORT_OPTIONS: ReadonlyArray<{
+  value: TravelPackageSort;
+  label: string;
+}> = [
+  { value: "recommended", label: "Recommended" },
+  { value: "price-asc", label: "Price: Low to High" },
+  { value: "price-desc", label: "Price: High to Low" },
+  { value: "rating", label: "Rating" },
+  { value: "name", label: "Name A-Z" },
+];
+
+export const TRAVEL_PACKAGE_PRICE_RANGES: ReadonlyArray<{
+  value: string;
+  label: string;
+}> = [
+  { value: "all", label: "Any price" },
+  { value: "under-1000", label: "Under $1,000" },
+  { value: "1000-2000", label: "$1,000 - $2,000" },
+  { value: "over-2000", label: "$2,000+" },
+];
+
+export function getPriceRangeBounds(value: string): {
+  minPrice?: number;
+  maxPrice?: number;
+} {
+  switch (value) {
+    case "under-1000":
+      return { maxPrice: 999 };
+    case "1000-2000":
+      return { minPrice: 1000, maxPrice: 2000 };
+    case "over-2000":
+      return { minPrice: 2000 };
+    default:
+      return {};
+  }
+}
+
 export type TravelPackageInput = {
   destinationName: string;
   country: string;
@@ -69,8 +116,8 @@ export function parseTravelPackageInput(body: unknown): ParseResult {
   }
 
   const imageUrl = readString(source.imageUrl);
-  if (imageUrl && !/^https?:\/\/\S+$/i.test(imageUrl)) {
-    errors.imageUrl = "Image URL must start with http:// or https://";
+  if (imageUrl && !/^(https?:\/\/\S+|\/[^\s]*)$/i.test(imageUrl)) {
+    errors.imageUrl = "Image URL must start with http://, https:// or /";
   }
 
   const description = readString(source.description);

@@ -20,15 +20,17 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="en" className={`${JosefinSans.variable} h-full antialiased`}>
-      <body className="min-h-full flex flex-col font-sans" suppressHydrationWarning>
-       <main>
-         <Navbar />
-       
-         {children}
-       </main>
-       <Footer />
-       <Toaster />
-        </body>
+      <body
+        className="flex min-h-full flex-col font-sans"
+        suppressHydrationWarning
+      >
+        <Navbar />
+
+        <main className="flex-1">{children}</main>
+
+        <Footer />
+        <Toaster />
+      </body>
     </html>
   );
 }

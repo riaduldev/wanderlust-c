@@ -1,18 +1,20 @@
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowUpRight } from "lucide-react";
+
+import { NewsletterForm } from "@/components/newsletter-form";
 
 const quickLinks = [
   { label: "Home", href: "/" },
-  { label: "Destinations", href: "#destinations" },
-  { label: "My Bookings", href: "#bookings" },
-  { label: "My Profile", href: "#profile" },
+  { label: "Destinations", href: "/destinations" },
+  { label: "My Bookings", href: "/bookings" },
+  { label: "Add Destinations", href: "/add-destinations" },
+  { label: "Admin", href: "/admin" },
 ];
 
 const supportLinks = [
-  { label: "Help Center", href: "#help" },
-  { label: "Terms of Service", href: "#terms" },
-  { label: "Privacy Policy", href: "#privacy" },
+  { label: "Help Center", href: "/help" },
+  { label: "Terms of Service", href: "/terms" },
+  { label: "Privacy Policy", href: "/privacy" },
 ];
 
 function XIcon(props: React.ComponentProps<"svg">) {
@@ -70,22 +72,7 @@ export function Footer() {
             <p className="text-white/70 mt-3 text-[13px]">
               Subscribe for exclusive travel deals and inspiration.
             </p>
-            <form className="relative mt-5 w-full max-w-[320px]">
-              <input
-                type="email"
-                name="email"
-                placeholder="Enter email"
-                aria-label="Email address"
-                className="bg-white/10 placeholder:text-white/80 focus-visible:ring-brand/60 h-12 w-full rounded-none px-4 pr-12 text-sm text-white outline-none transition-colors focus-visible:ring-2"
-              />
-              <button
-                type="submit"
-                aria-label="Subscribe"
-                className="text-white hover:text-brand absolute right-0 top-0 flex h-12 w-12 items-center justify-center transition-colors"
-              >
-                <ArrowUpRight className="size-5" />
-              </button>
-            </form>
+            <NewsletterForm />
           </div>
 
           <div>
@@ -139,27 +126,33 @@ export function Footer() {
           </p>
 
           <div className="flex items-center gap-5">
-            <Link
-              href="#x"
+            <a
+              href="https://x.com"
+              target="_blank"
+              rel="noreferrer noopener"
               aria-label="X"
               className="text-white hover:text-brand transition-colors"
             >
               <XIcon className="size-[18px]" />
-            </Link>
-            <Link
-              href="#linkedin"
+            </a>
+            <a
+              href="https://www.linkedin.com"
+              target="_blank"
+              rel="noreferrer noopener"
               aria-label="LinkedIn"
               className="text-white hover:text-brand transition-colors"
             >
               <LinkedInIcon className="size-[18px]" />
-            </Link>
-            <Link
-              href="#instagram"
+            </a>
+            <a
+              href="https://www.instagram.com"
+              target="_blank"
+              rel="noreferrer noopener"
               aria-label="Instagram"
               className="text-white hover:text-brand transition-colors"
             >
               <InstagramIcon className="size-[18px]" />
-            </Link>
+            </a>
           </div>
         </div>
       </div>

@@ -4,10 +4,20 @@ import mongoose from "mongoose";
 
 import { connectToDatabase, isMongoConfigured } from "@/lib/mongodb";
 import { parseTravelPackageInput } from "@/lib/travel-package";
+import {
+  buildTravelPackageQuery,
+  parseTravelPackageFilters,
+} from "@/lib/travel-packages-query";
 import { TravelPackageModel } from "@/models/travel-package";
 
-export async function GET() {
+export async function GET(request: Request) {
   await connection();
+
+  const parsed = parseTravelPackageFilters(new URL(request.url).searchParams);
+
+  if (!parsed.ok) {
+    return NextResponse.json({ message: parsed.message }, { status: 400 });
+  }
 
   if (!isMongoConfigured()) {
     return NextResponse.json(
@@ -19,11 +29,14 @@ export async function GET() {
   try {
     await connectToDatabase();
 
-    const packages = await TravelPackageModel.find()
-      .sort({ createdAt: -1 })
-      .limit(100);
+    const { filter, sort } = buildTravelPackageQuery(parsed.filters);
 
-    return NextResponse.json({ packages });
+    const [packages, total] = await Promise.all([
+      TravelPackageModel.find(filter).sort(sort).limit(100).lean(),
+      TravelPackageModel.countDocuments(filter),
+    ]);
+
+    return NextResponse.json({ packages, total });
   } catch (error) {
     return NextResponse.json(
       {

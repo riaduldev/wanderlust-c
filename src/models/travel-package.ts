@@ -47,6 +47,12 @@ const travelPackageSchema = new Schema(
       trim: true,
       maxlength: 2000,
     },
+    rating: {
+      type: Number,
+      min: 0,
+      max: 5,
+      default: 4.5,
+    },
   },
   {
     timestamps: true,

@@ -1,14 +1,9 @@
 import Image from "next/image";
+import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 
+import { BannerSearch } from "@/components/banner-search";
 import { Button } from "@/components/ui/button";
-
-const searchFields = [
-  { label: "Location", value: "Address, City Or Zip" },
-  { label: "Date/Duration", value: "Anytime/3 Days" },
-  { label: "Budget", value: "$0-$30000" },
-  { label: "People", value: "5-10" },
-];
 
 export function Banner() {
   return (
@@ -39,43 +34,24 @@ export function Banner() {
           <Button
             className="bg-brand hover:bg-brand-dark text-white h-12 w-full rounded-none px-8 text-sm font-medium tracking-[0.12em] uppercase sm:w-auto"
             size="lg"
-          >
-            Explore Now
-            <ArrowRight className="ml-2 size-4" />
-          </Button>
+            render={
+              <Link href="/destinations">
+                Explore Now
+                <ArrowRight className="ml-2 size-4" />
+              </Link>
+            }
+          />
           <Button
             variant="outline"
             className="text-white border-white/40 hover:bg-white/15 hover:text-white h-12 w-full rounded-none border bg-white/15 px-8 text-sm font-medium tracking-[0.12em] uppercase sm:w-auto"
             size="lg"
-          >
-            View Destination
-          </Button>
+            render={<Link href="/bookings">My Bookings</Link>}
+          />
         </div>
       </div>
 
       <div className="relative w-full bg-white/40 backdrop-blur-md">
-        <div className="mx-auto grid w-full max-w-[1400px] grid-cols-1 gap-px sm:grid-cols-2 lg:grid-cols-[repeat(4,minmax(0,1fr))_auto]">
-          {searchFields.map((field, index) => (
-            <div key={field.label} className="bg-black/10 px-6 py-4">
-              <label
-                htmlFor={`search-${index}`}
-                className="text-white block text-base font-normal"
-              >
-                {field.label}
-              </label>
-              <input
-                id={`search-${index}`}
-                type="text"
-                defaultValue={field.value}
-                className="text-white/85 placeholder:text-white/85 mt-1 w-full bg-transparent text-sm outline-none"
-              />
-            </div>
-          ))}
-
-          <Button className="bg-brand hover:bg-brand-dark text-white min-h-14 rounded-none px-10 text-sm font-medium tracking-[0.12em] uppercase sm:col-span-2 lg:col-span-1">
-            Search
-          </Button>
-        </div>
+        <BannerSearch />
       </div>
     </section>
   );

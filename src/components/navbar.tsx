@@ -1,27 +1,41 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { User } from "lucide-react";
 
 import { MobileNav } from "@/components/mobile-nav";
 
 export const navLinks = [
-  { label: "Home", href: "/", active: true },
-  { label: "Destinations", href: "/add-destinations", active: false },
-  { label: "My Bookings", href: "#bookings", active: false },
-  { label: "Admin", href: "/admin", active: false },
+  { label: "Home", href: "/" },
+  { label: "Destinations", href: "/destinations" },
+  { label: "My Bookings", href: "/bookings" },
+  { label: "Add Destinations", href: "/add-destinations" },
 ];
 
+function isActive(pathname: string, href: string) {
+  if (href === "/") {
+    return pathname === "/";
+  }
+
+  return pathname === href || pathname.startsWith(`${href}/`);
+}
+
 export function Navbar() {
+  const pathname = usePathname();
+
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-border/60 bg-white">
+    <header className="bg-background/95 sticky top-0 z-50 w-full border-b border-border/60 backdrop-blur">
       <div className="relative mx-auto flex h-16 w-full max-w-[1400px] items-center justify-between gap-4 px-4 sm:px-6 lg:px-10">
         <nav className="hidden flex-1 items-center gap-7 lg:flex">
           {navLinks.map((link) => (
             <Link
-              key={link.label}
+              key={link.href}
               href={link.href}
+              aria-current={isActive(pathname, link.href) ? "page" : undefined}
               className={
-                link.active
+                isActive(pathname, link.href)
                   ? "text-brand text-[15px] underline underline-offset-[6px]"
                   : "text-foreground/90 hover:text-brand text-[15px] transition-colors"
               }
@@ -52,23 +66,12 @@ export function Navbar() {
 
         <div className="flex flex-1 items-center justify-end gap-5 sm:gap-7">
           <Link
-            href="#profile"
+            href="/admin"
+            aria-current={isActive(pathname, "/admin") ? "page" : undefined}
             className="text-foreground/90 hover:text-brand flex items-center gap-2 text-[15px] transition-colors"
           >
             <User className="size-[18px]" />
-            <span className="hidden sm:inline">Profile</span>
-          </Link>
-          <Link
-            href="#login"
-            className="text-foreground/90 hover:text-brand hidden text-[15px] transition-colors sm:inline"
-          >
-            Login
-          </Link>
-          <Link
-            href="#signup"
-            className="text-foreground/90 hover:text-brand hidden text-[15px] transition-colors sm:inline"
-          >
-            Sign Up
+            <span className="hidden sm:inline">Admin</span>
           </Link>
         </div>
       </div>

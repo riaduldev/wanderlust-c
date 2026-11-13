@@ -2,16 +2,25 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { Menu, X } from "lucide-react";
 
 type NavLink = {
   label: string;
   href: string;
-  active: boolean;
 };
 
 export function MobileNav({ links }: { links: NavLink[] }) {
   const [open, setOpen] = useState(false);
+  const pathname = usePathname();
+
+  function isActive(href: string) {
+    if (href === "/") {
+      return pathname === "/";
+    }
+
+    return pathname === href || pathname.startsWith(`${href}/`);
+  }
 
   return (
     <>
@@ -26,42 +35,32 @@ export function MobileNav({ links }: { links: NavLink[] }) {
       </button>
 
       {open ? (
-        <div className="bg-background absolute inset-x-0 top-full z-50 border-b border-border shadow-lg">
+        <div
+          key={pathname}
+          className="bg-background absolute inset-x-0 top-full z-50 border-b border-border shadow-lg"
+        >
           <nav className="mx-auto flex w-full max-w-[1400px] flex-col px-4 py-3 sm:px-6">
             {links.map((link) => (
               <Link
-                key={link.label}
+                key={link.href}
                 href={link.href}
                 onClick={() => setOpen(false)}
+                aria-current={isActive(link.href) ? "page" : undefined}
                 className={
-                  link.active
-                    ? "text-brand border-l-2 border-brand py-3 pl-3 text-[15px]"
-                    : "text-foreground/90 hover:text-brand border-l-2 border-transparent py-3 pl-3 text-[15px] transition-colors"
+                  isActive(link.href)
+                    ? "text-brand border-brand border-l-2 py-3 pl-3 text-[15px]"
+                    : "text-foreground/90 hover:text-brand border-transparent border-l-2 py-3 pl-3 text-[15px] transition-colors"
                 }
               >
                 {link.label}
               </Link>
             ))}
             <Link
-              href="#profile"
+              href="/admin"
               onClick={() => setOpen(false)}
-              className="text-foreground/90 hover:text-brand border-l-2 border-transparent py-3 pl-3 text-[15px] transition-colors"
+              className="text-foreground/90 hover:text-brand border-transparent border-l-2 py-3 pl-3 text-[15px] transition-colors"
             >
-              Profile
-            </Link>
-            <Link
-              href="#login"
-              onClick={() => setOpen(false)}
-              className="text-foreground/90 hover:text-brand border-l-2 border-transparent py-3 pl-3 text-[15px] transition-colors"
-            >
-              Login
-            </Link>
-            <Link
-              href="#signup"
-              onClick={() => setOpen(false)}
-              className="text-foreground/90 hover:text-brand border-l-2 border-transparent py-3 pl-3 text-[15px] transition-colors"
-            >
-              Sign Up
+              Admin
             </Link>
           </nav>
         </div>

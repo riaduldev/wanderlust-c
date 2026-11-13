@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -26,10 +27,15 @@ export function CallToAction() {
           Join thousands of travelers who have discovered the world with us
         </p>
 
-        <Button className="bg-background text-foreground hover:bg-background/90 mt-8 h-14 w-full rounded-none px-8 text-sm font-medium tracking-[0.12em] uppercase sm:mt-10 sm:w-auto sm:px-10">
-          Book Your Trip Today
-          <ArrowRight className="ml-3 size-4" />
-        </Button>
+        <Button
+          className="bg-background text-foreground hover:bg-background/90 mt-8 h-14 w-full rounded-none px-8 text-sm font-medium tracking-[0.12em] uppercase sm:mt-10 sm:w-auto sm:px-10"
+          render={
+            <Link href="/destinations">
+              Book Your Trip Today
+              <ArrowRight className="ml-3 size-4" />
+            </Link>
+          }
+        />
       </div>
     </section>
   );
