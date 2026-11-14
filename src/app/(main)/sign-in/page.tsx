@@ -48,7 +48,7 @@ export default function SignInPage() {
         title: `Welcome back${data?.user?.name ? `, ${data.user.name}` : ""}!`,
         description: "You are signed in.",
       });
-      router.replace("/profile");
+      router.replace("/");
     } finally {
       setPending(false);
     }

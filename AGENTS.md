@@ -44,7 +44,8 @@ The backends write to **different MongoDB databases/collections** — never mix 
 
 - `src/lib/auth.ts` — `betterAuth` with the mongo adapter (`@better-auth/mongo-adapter`, raw `mongodb` driver), email+password enabled, Google social provider, and the **required `nextCookies()` plugin** (from `better-auth/next-js`; without it cookie clearing/sign-out breaks in Next route handlers).
 - **Gotchas**:
-  - Its Mongo connection string comes from `BETTER_AUTH_DB_URI` in `.env` (fallback `mongodb://localhost:27017`), but the db name is **hardcoded** `wanderlust-db` — it ignores `MONGODB_URI`. (In practice that URI points at an Atlas cluster.)
+  - Its Mongo connection string comes from `BETTER_AUTH_DB_URI` in `.env` (fallback `mongodb://localhost:27017` with a scheme guard in `auth.ts`), but the db name is **hardcoded** `wanderlust-db` — it ignores `MONGODB_URI`. (In practice that URI points at an Atlas cluster.)
+  - **Do not change the fallback to a non-mongo URL** — `new MongoClient("http://...")` throws `MongoParseError` at module evaluation, which runs during `next build` page-data collection (that's what broke the Vercel deploy) and would break local dev too.
   - The Google provider reads `GOOGLE_DB_CLIENT_ID`/`GOOGLE_DB_SECRET` from `.env`. `BETTER_AUTH_SECRET`/`BETTER_AUTH_URL` are auto-read by better-auth itself — don't add explicit config keys for them.
   - **Google login**: works end-to-end only if `http://localhost:3000/api/auth/callback/google` (redirect URI) and `http://localhost:3000` (origin) are registered in Google Cloud Console for that client — the server builds the redirect URL regardless.
 - `src/app/api/auth/[...all]/route.ts` — catch-all handler via `toNextJsHandler(auth)`.

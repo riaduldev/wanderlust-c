@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 import { useState } from "react";
 import { Lock, Mail, User } from "lucide-react";
 
@@ -67,7 +67,7 @@ export default function SignUpPage() {
         title: "Account created",
         description: "Welcome to Wanderlast!",
       });
-      router.replace("/profile");
+      router.replace("/");
     } finally {
       setPending(false);
     }
@@ -76,12 +76,13 @@ export default function SignUpPage() {
   async function handleGoogleSignUp() {
   const { error } = await signIn.social({
     provider: "google",
-    callbackURL: "/profile",
+    callbackURL: "/",
   });
 
   if (error) {
     console.error("Google sign-up failed:", error.message);
   }
+  
 }
 
   return (
