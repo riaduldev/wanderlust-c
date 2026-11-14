@@ -18,7 +18,7 @@ export function CallToAction() {
       <div className="-z-10 absolute inset-0 bg-black/50" />
       <div className="-z-10 absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(0,0,0,0)_15%,rgba(0,0,0,0.55)_100%)]" />
 
-      <div className="relative mx-auto flex w-full max-w-[1344px] flex-col items-center justify-center px-4 py-24 text-center sm:px-6 lg:px-8 lg:py-32">
+      <div className="relative mx-auto flex w-full max-w-[1344px] flex-col items-center justify-center px-4 py-24 text-center animate-rise-in sm:px-6 lg:px-8 lg:py-32">
         <h2 className="font-heading text-white font-light text-[2rem] leading-tight sm:text-[2.75rem] lg:text-[3rem]">
           Ready To Start Your Journey?
         </h2>

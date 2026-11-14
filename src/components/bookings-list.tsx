@@ -88,7 +88,7 @@ function BookingRow({
   const [open, setOpen] = useState(false);
 
   return (
-    <article className="bg-card flex flex-col gap-4 rounded-xl border border-border/70 p-3 shadow-sm sm:flex-row sm:items-center">
+    <article className="bg-card flex flex-col gap-4 rounded-xl border border-border/70 p-3 shadow-sm transition-shadow duration-300 hover:shadow-md sm:flex-row sm:items-center">
       <div className="bg-muted relative h-36 w-full shrink-0 overflow-hidden rounded-lg sm:h-28 sm:w-48">
         <Image
           src={image}

@@ -33,6 +33,7 @@ export function BookNowButton({ destination }: { destination: Destination }) {
     return (
       <Button
         variant="outline"
+        nativeButton={false}
         className="border-brand/40 text-brand hover:bg-brand/10 hover:text-brand"
         render={
           <Link href="/bookings">

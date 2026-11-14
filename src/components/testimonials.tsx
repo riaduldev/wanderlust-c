@@ -45,7 +45,7 @@ export function Testimonials() {
   return (
     <section className="bg-background w-full py-20 lg:py-28">
       <Carousel opts={{ align: "start", loop: true }} className="w-full">
-        <div className="mx-auto w-full max-w-[1344px] px-4 sm:px-6 lg:px-8">
+        <div className="mx-auto w-full max-w-[1344px] px-4 sm:px-6 lg:px-8 animate-rise-in">
           <div className="flex items-start justify-between gap-6">
             <div>
               <h2 className="font-heading text-foreground font-light text-[2.25rem] leading-tight sm:text-[3rem]">

@@ -25,7 +25,7 @@ export function WhyChooseUs() {
   return (
     <section className="bg-brand/10 w-full py-20 lg:py-28">
       <div className="mx-auto w-full max-w-[1344px] px-4 sm:px-6 lg:px-8">
-        <div className="text-center">
+        <div className="text-center animate-rise-in">
           <h2 className="font-heading text-foreground font-light text-[2.25rem] leading-tight sm:text-[3rem]">
             Why Choose Wanderlust
           </h2>
@@ -35,10 +35,11 @@ export function WhyChooseUs() {
         </div>
 
         <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:mt-16 lg:grid-cols-3 lg:gap-6">
-          {features.map((feature) => (
+          {features.map((feature, index) => (
             <article
               key={feature.title}
-              className="bg-background border-border/60 flex flex-col p-8 lg:p-10"
+              style={{ animationDelay: `${index * 90}ms` }}
+              className="bg-background border-border/60 flex flex-col p-8 animate-rise-in lg:p-10"
             >
               <Image
                 src={feature.icon}

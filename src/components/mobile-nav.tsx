@@ -3,7 +3,9 @@
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Menu, X } from "lucide-react";
+import { Menu, User, X } from "lucide-react";
+
+import { useSession } from "@/app/api/auth/[...all]/auth-client";
 
 type NavLink = {
   label: string;
@@ -13,6 +15,8 @@ type NavLink = {
 export function MobileNav({ links }: { links: NavLink[] }) {
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
+  const { data: session, isPending } = useSession();
+  const user = session?.user;
 
   function isActive(href: string) {
     if (href === "/") {
@@ -55,13 +59,48 @@ export function MobileNav({ links }: { links: NavLink[] }) {
                 {link.label}
               </Link>
             ))}
-            <Link
-              href="/admin"
-              onClick={() => setOpen(false)}
-              className="text-foreground/90 hover:text-brand border-transparent border-l-2 py-3 pl-3 text-[15px] transition-colors"
-            >
-              Admin
-            </Link>
+            {isPending ? null : user ? (
+              <Link
+                href="/profile"
+                onClick={() => setOpen(false)}
+                aria-current={isActive("/profile") ? "page" : undefined}
+                className={
+                  isActive("/profile")
+                    ? "text-brand border-brand flex items-center gap-2 border-l-2 py-3 pl-3 text-[15px]"
+                    : "text-foreground/90 hover:text-brand flex items-center gap-2 border-l-2 border-transparent py-3 pl-3 text-[15px] transition-colors"
+                }
+              >
+                <User className="size-4" aria-hidden="true" />
+                Profile
+              </Link>
+            ) : (
+              <>
+                <Link
+                  href="/sign-in"
+                  onClick={() => setOpen(false)}
+                  aria-current={isActive("/sign-in") ? "page" : undefined}
+                  className={
+                    isActive("/sign-in")
+                      ? "text-brand border-brand border-l-2 py-3 pl-3 text-[15px]"
+                      : "text-foreground/90 hover:text-brand border-transparent border-l-2 py-3 pl-3 text-[15px] transition-colors"
+                  }
+                >
+                  Sign In
+                </Link>
+                <Link
+                  href="/sign-up"
+                  onClick={() => setOpen(false)}
+                  aria-current={isActive("/sign-up") ? "page" : undefined}
+                  className={
+                    isActive("/sign-up")
+                      ? "text-brand border-brand border-l-2 py-3 pl-3 text-[15px]"
+                      : "text-foreground/90 hover:text-brand border-transparent border-l-2 py-3 pl-3 text-[15px] transition-colors"
+                  }
+                >
+                  Sign Up
+                </Link>
+              </>
+            )}
           </nav>
         </div>
       ) : null}

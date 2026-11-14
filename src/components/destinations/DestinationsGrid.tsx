@@ -7,7 +7,7 @@ import { FALLBACK_DESTINATION_IMAGES } from "@/lib/destinations-api";
 import type { Destination } from "@/types/destination";
 
 const selectClassName =
-  "w-full rounded-none border-border bg-white px-4 py-3 text-[11px] uppercase text-muted-foreground outline-none";
+  "w-full rounded-none border-border bg-white px-4 py-3 text-[11px] uppercase text-muted-foreground outline-none transition-colors focus-visible:border-brand";
 
 export default function DestinationsGrid({
   destinations,
@@ -109,15 +109,20 @@ export default function DestinationsGrid({
       {filteredDestinations.length > 0 ? (
         <div className="grid grid-cols-1 gap-x-5 gap-y-6 sm:grid-cols-2 lg:grid-cols-3">
           {filteredDestinations.map((destination, index) => (
-            <DestinationCard
+            <div
               key={destination._id}
-              destination={destination}
-              fallbackImage={
-                FALLBACK_DESTINATION_IMAGES[
-                  index % FALLBACK_DESTINATION_IMAGES.length
-                ]
-              }
-            />
+              style={{ animationDelay: `${Math.min(index, 8) * 70}ms` }}
+              className="animate-rise-in"
+            >
+              <DestinationCard
+                destination={destination}
+                fallbackImage={
+                  FALLBACK_DESTINATION_IMAGES[
+                    index % FALLBACK_DESTINATION_IMAGES.length
+                  ]
+                }
+              />
+            </div>
           ))}
         </div>
       ) : (

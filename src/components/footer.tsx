@@ -8,7 +8,8 @@ const quickLinks = [
   { label: "Destinations", href: "/destinations" },
   { label: "My Bookings", href: "/bookings" },
   { label: "Add Destinations", href: "/add-destinations" },
-  { label: "Admin", href: "/admin" },
+  { label: "Sign In", href: "/sign-in" },
+  { label: "Sign Up", href: "/sign-up" },
 ];
 
 const supportLinks = [

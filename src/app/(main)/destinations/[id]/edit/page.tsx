@@ -21,7 +21,7 @@ export default async function EditDestinationPage({
   }
 
   return (
-    <section className="mx-auto max-w-3xl px-4 py-10">
+    <section className="mx-auto max-w-3xl px-4 py-10 animate-rise-in">
       <div className="mb-8">
         <h1 className="text-3xl font-semibold text-gray-900">
           Edit Destination

@@ -7,7 +7,7 @@ export default function DestinationsExplorer({
   destinations: Destination[];
 }) {
   return (
-    <section className="mx-auto max-w-7xl px-4 py-10">
+    <section className="mx-auto max-w-7xl px-4 py-10 animate-rise-in">
       <div className="mb-6">
         <h1 className="text-3xl font-normal tracking-tight text-gray-900">
           Explore All Destinations

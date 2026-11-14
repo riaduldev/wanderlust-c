@@ -19,7 +19,7 @@ export function Banner() {
       <div className="-z-10 absolute inset-0 bg-black/55" />
       <div className="-z-10 absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-black/50 to-transparent" />
 
-      <div className="relative mx-auto flex w-full max-w-[1400px] flex-1 flex-col items-center justify-center px-4 pt-16 pb-10 text-center sm:px-6 lg:px-10 lg:pt-24 lg:pb-16">
+      <div className="relative mx-auto flex w-full max-w-[1400px] flex-1 flex-col items-center justify-center px-4 pt-16 pb-10 text-center animate-rise-in sm:px-6 lg:px-10 lg:pt-24 lg:pb-16">
         <h1 className="font-heading text-white font-light text-[2.75rem] leading-[1.08] tracking-tight sm:text-6xl lg:text-[5rem]">
           <span className="block">Discover Your</span>
           <span className="block">Next Adventure</span>

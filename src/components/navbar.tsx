@@ -5,7 +5,9 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { User } from "lucide-react";
 
+import { useSession } from "@/app/api/auth/[...all]/auth-client";
 import { MobileNav } from "@/components/mobile-nav";
+import { Button } from "@/components/ui/button";
 
 export const navLinks = [
   { label: "Home", href: "/" },
@@ -24,6 +26,8 @@ function isActive(pathname: string, href: string) {
 
 export function Navbar() {
   const pathname = usePathname();
+  const { data: session, isPending } = useSession();
+  const user = session?.user;
 
   return (
     <header className="bg-background/95 sticky top-0 z-50 w-full border-b border-border/60 backdrop-blur">
@@ -64,15 +68,41 @@ export function Navbar() {
           />
         </Link>
 
-        <div className="flex flex-1 items-center justify-end gap-5 sm:gap-7">
-          <Link
-            href="/admin"
-            aria-current={isActive(pathname, "/admin") ? "page" : undefined}
-            className="text-foreground/90 hover:text-brand flex items-center gap-2 text-[15px] transition-colors"
-          >
-            <User className="size-[18px]" />
-            <span className="hidden sm:inline">Admin</span>
-          </Link>
+        <div className="flex flex-1 items-center justify-end gap-3 sm:gap-4">
+          {isPending ? null : user ? (
+            <Link
+              href="/profile"
+              aria-label="Your profile"
+              className={
+                isActive(pathname, "/profile")
+                  ? "flex items-center gap-2 rounded-full bg-brand/10 px-2 py-1 text-brand transition-colors"
+                  : "flex items-center gap-2 rounded-full px-2 py-1 text-foreground/90 transition-colors hover:bg-muted hover:text-brand"
+              }
+            >
+              <span className="flex size-8 items-center justify-center rounded-full bg-brand/10 text-brand">
+                <User className="size-4" aria-hidden="true" />
+              </span>
+              <span className="hidden max-w-32 truncate text-[15px] sm:inline">
+                {user.name}
+              </span>
+            </Link>
+          ) : (
+            <>
+              <Link
+                href="/sign-in"
+                className="text-foreground/90 hover:text-brand text-[15px] transition-colors"
+              >
+                Sign In
+              </Link>
+              <Button
+                render={<Link href="/sign-up" />}
+                nativeButton={false}
+                className="rounded-lg bg-brand px-4 text-white hover:bg-brand-dark"
+              >
+                Sign Up
+              </Button>
+            </>
+          )}
         </div>
       </div>
     </header>

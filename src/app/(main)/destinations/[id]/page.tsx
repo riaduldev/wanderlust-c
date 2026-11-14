@@ -49,7 +49,7 @@ async function DestinationDetail({
   const price = Number(destination.price);
 
   return (
-    <section className="mx-auto w-full max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+    <section className="mx-auto w-full max-w-7xl px-4 py-6 animate-rise-in sm:px-6 lg:px-8">
 
       {/* Top Navigation */}
       <div className="mb-4 flex items-center justify-between">
@@ -62,7 +62,7 @@ async function DestinationDetail({
           Back to Destinations
         </Link>
 
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center justify-end gap-2">
 
           <Link
             href={`/destinations/${id}/edit`}
