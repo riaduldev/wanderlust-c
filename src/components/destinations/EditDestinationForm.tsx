@@ -31,8 +31,7 @@ import { toast } from "@/components/ui/toast";
 import { TRAVEL_PACKAGE_CATEGORIES } from "@/lib/travel-package";
 import type { Destination } from "@/types/destination";
 
-const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
+const API_BASE_URL =`${process.env.NEXT_PUBLIC_API_URL}/destinations`;
 
 const fieldClassName =
   "h-9 rounded-md border-transparent bg-muted/60 placeholder:text-muted-foreground";
