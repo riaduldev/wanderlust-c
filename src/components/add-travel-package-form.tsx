@@ -23,7 +23,7 @@ import {
 } from "@/lib/travel-package";
 
 const API_BASE_URL =
-  process.env.NEXT_PUBLIC_DESTINATIONS_API_URL ?? "http://localhost:8000";
+  process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
 
 const fieldClassName =
   "h-9 rounded-md border-transparent bg-muted/60 placeholder:text-muted-foreground";
