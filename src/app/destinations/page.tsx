@@ -1,27 +1,15 @@
-import { DestinationsExplorer } from "@/components/destinations/DestinationsExplorer";
-import { Destination } from "@/types/destination";
-
-
-const getDestinations = async (): Promise<Destination[]> => {
-  const res = await fetch("http://localhost:8000/destinations", {
-    cache: "no-store",
-  });
-
-  if (!res.ok) {
-    throw new Error("Failed to fetch destinations");
-  }
-
-  const result = await res.json();
-  // Handles both direct array `[...]` and wrapped `{ data: [...] }` responses
-  return Array.isArray(result) ? result : result.data ?? [];
-};
+import DestinationsExplorer from "@/components/destinations/DestinationsExplorer";
+import { getDestinations } from "@/lib/destinations-api";
+import type { Destination } from "@/types/destination";
 
 const AllDestinationsPage = async () => {
-  const data = await getDestinations();
+  // An unreachable API should not take the whole catalogue page down;
+  // the grid's empty state covers it.
+  const destinations: Destination[] = await getDestinations().catch(() => []);
 
   return (
     <main className="min-h-screen bg-white">
-      <DestinationsExplorer initialDestinations={data} />
+      <DestinationsExplorer destinations={destinations} />
     </main>
   );
 };

@@ -22,17 +22,9 @@ import {
   EmptyTitle,
 } from "@/components/ui/empty";
 import { toast } from "@/components/ui/toast";
+import { FALLBACK_DESTINATION_IMAGES } from "@/lib/destinations-api";
 import { useBookings } from "@/hooks/use-bookings";
 import { formatDepartureDate, type Booking } from "@/lib/bookings";
-
-const FALLBACK_IMAGES = [
-  "/images/destinations/image1.png",
-  "/images/destinations/image2.png",
-  "/images/destinations/image3.png",
-  "/images/destinations/image4.png",
-  "/images/destinations/image5.png",
-  "/images/destinations/image6.png",
-];
 
 export function BookingsList() {
   const { bookings, cancel } = useBookings();
@@ -59,6 +51,7 @@ export function BookingsList() {
           </EmptyDescription>
         </EmptyHeader>
         <Button
+          nativeButton={false}
           className="bg-brand hover:bg-brand-dark text-white"
           render={<Link href="/destinations">Explore destinations</Link>}
         />
@@ -72,7 +65,9 @@ export function BookingsList() {
         <BookingRow
           key={booking.id}
           booking={booking}
-          fallbackImage={FALLBACK_IMAGES[index % FALLBACK_IMAGES.length]}
+          fallbackImage={
+            FALLBACK_DESTINATION_IMAGES[index % FALLBACK_DESTINATION_IMAGES.length]
+          }
           onCancel={() => handleCancel(booking)}
         />
       ))}

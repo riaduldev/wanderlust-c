@@ -28,6 +28,7 @@ export function CallToAction() {
         </p>
 
         <Button
+          nativeButton={false}
           className="bg-background text-foreground hover:bg-background/90 mt-8 h-14 w-full rounded-none px-8 text-sm font-medium tracking-[0.12em] uppercase sm:mt-10 sm:w-auto sm:px-10"
           render={
             <Link href="/destinations">

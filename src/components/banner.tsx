@@ -32,6 +32,7 @@ export function Banner() {
 
         <div className="mt-10 flex w-full flex-col items-center justify-center gap-4 sm:w-auto sm:flex-row sm:gap-5">
           <Button
+            nativeButton={false}
             className="bg-brand hover:bg-brand-dark text-white h-12 w-full rounded-none px-8 text-sm font-medium tracking-[0.12em] uppercase sm:w-auto"
             size="lg"
             render={
@@ -43,6 +44,7 @@ export function Banner() {
           />
           <Button
             variant="outline"
+            nativeButton={false}
             className="text-white border-white/40 hover:bg-white/15 hover:text-white h-12 w-full rounded-none border bg-white/15 px-8 text-sm font-medium tracking-[0.12em] uppercase sm:w-auto"
             size="lg"
             render={<Link href="/bookings">My Bookings</Link>}
