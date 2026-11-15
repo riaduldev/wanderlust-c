@@ -31,8 +31,14 @@ export function Navbar() {
 
   return (
     <header className="bg-background/95 sticky top-0 z-50 w-full border-b border-border/60 backdrop-blur">
-      <div className="relative mx-auto flex h-16 w-full max-w-[1400px] items-center justify-between gap-4 px-4 sm:px-6 lg:px-10">
-        <nav className="hidden flex-1 items-center gap-7 lg:flex">
+      <div className="relative mx-auto flex h-16 w-full max-w-[1400px] items-center justify-between gap-2 px-4 sm:gap-4 sm:px-6 lg:px-10">
+        {/*
+          Full nav links only from xl up: at 1024-1279px the link row is
+          wider than the space left of the centered logo and collides with
+          it (verified via headless screenshot). Below xl the hamburger
+          menu carries all the links instead.
+        */}
+        <nav className="hidden flex-1 items-center gap-7 xl:flex">
           {navLinks.map((link) => (
             <Link
               key={link.href}
@@ -49,14 +55,20 @@ export function Navbar() {
           ))}
         </nav>
 
-        <div className="flex flex-1 items-center lg:hidden">
+        <div className="flex flex-1 items-center xl:hidden">
           <MobileNav links={navLinks} />
         </div>
 
+        {/*
+          Below sm the logo sits in the flex flow (centered by the two
+          flex-1 side columns) so it can never overlap the auth buttons;
+          from sm up the side columns have enough room for the original
+          absolute-centered design.
+        */}
         <Link
           href="/"
           aria-label="Wanderlast home"
-          className="absolute left-1/2 -translate-x-1/2"
+          className="shrink-0 sm:absolute sm:left-1/2 sm:-translate-x-1/2"
         >
           <Image
             src="/images/Wanderlast.png"
@@ -88,16 +100,17 @@ export function Navbar() {
             </Link>
           ) : (
             <>
+              {/* Hidden below sm: no room next to the logo — available in the mobile menu */}
               <Link
                 href="/sign-in"
-                className="text-foreground/90 hover:text-brand text-[15px] transition-colors"
+                className="text-foreground/90 hover:text-brand hidden text-[15px] transition-colors sm:inline"
               >
                 Sign In
               </Link>
               <Button
                 render={<Link href="/sign-up" />}
                 nativeButton={false}
-                className="rounded-lg bg-brand px-4 text-white hover:bg-brand-dark"
+                className="rounded-lg bg-brand px-3 text-white hover:bg-brand-dark sm:px-4"
               >
                 Sign Up
               </Button>
