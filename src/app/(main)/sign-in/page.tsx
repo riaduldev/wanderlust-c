@@ -15,6 +15,12 @@ import { toast } from "@/components/ui/toast";
 const fieldIconClass =
   "pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground/70";
 
+/** Path the proxy sent us back from (`?next=/destinations/...`) — must stay a same-site path. */
+function safeNextPath() {
+  const next = new URLSearchParams(window.location.search).get("next");
+  return next && next.startsWith("/") && !next.startsWith("//") ? next : null;
+}
+
 export default function SignInPage() {
   const router = useRouter();
   const [email, setEmail] = useState("");
@@ -48,14 +54,18 @@ export default function SignInPage() {
         title: `Welcome back${data?.user?.name ? `, ${data.user.name}` : ""}!`,
         description: "You are signed in.",
       });
-      router.replace("/");
+      router.replace(safeNextPath() ?? "/");
+      router.refresh();
     } finally {
       setPending(false);
     }
   }
 
   function handleGoogleSignIn() {
-    void signIn.social({ provider: "google", callbackURL: "/profile" });
+    void signIn.social({
+      provider: "google",
+      callbackURL: safeNextPath() ?? "/profile",
+    });
   }
 
   return (
@@ -148,7 +158,7 @@ export default function SignInPage() {
               className="w-full rounded-md"
             >
               <GoogleIcon />
-              Sign Up With Google
+              Sign In With Google
             </Button>
           </div>
 

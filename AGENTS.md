@@ -37,7 +37,7 @@ The backends write to **different MongoDB databases/collections** — never mix 
 ### Verification baseline (Nov 2026)
 
 - `npx tsc --noEmit` is clean; keep it that way.
-- `npm run lint` has 0 errors and one pre-existing warning (unused `redirect` import in `sign-up/page.tsx`). Don't add new warnings.
+- `npm run lint` has 0 errors and 0 warnings; keep it that way.
 - `npm run build` passes.
 
 ## Authentication (better-auth)
@@ -49,8 +49,8 @@ The backends write to **different MongoDB databases/collections** — never mix 
   - The Google provider reads `GOOGLE_DB_CLIENT_ID`/`GOOGLE_DB_SECRET` from `.env`. `BETTER_AUTH_SECRET`/`BETTER_AUTH_URL` are auto-read by better-auth itself — don't add explicit config keys for them.
   - **Google login**: works end-to-end only if `http://localhost:3000/api/auth/callback/google` (redirect URI) and `http://localhost:3000` (origin) are registered in Google Cloud Console for that client — the server builds the redirect URL regardless.
 - `src/app/api/auth/[...all]/route.ts` — catch-all handler via `toNextJsHandler(auth)`.
-- `auth-client.ts` lives **inside the route folder** `src/app/api/auth/[...all]/`; exports `authClient` (baseURL from `BETTER_AUTH_URL`) and `signIn`/`signUp`/`useSession` from a second bare `createAuthClient()`. Import client helpers from there, not from a `lib/` path that doesn't exist.
-- **Route protection**: `src/proxy.ts` (Next 16 renamed the `middleware` convention to `proxy` — the function must be exported as `proxy`, not `middleware`) guards `/profile` and `/destinations/:path+` (detail + edit; `/destinations` list stays public) by checking for a cookie named `better-auth.session_token*` and redirecting to `/sign-in` — presence-only check (better-auth's documented middleware pattern), no DB in proxy. Client helpers `signIn`/`signUp`/`signOut`/`useSession` come from `auth-client.ts`.
+- `auth-client.ts` lives **inside the route folder** `src/app/api/auth/[...all]/`; exports **one** `createAuthClient()` instance as `authClient` and destructures `signIn`/`signUp`/`useSession`/`signOut` from that same instance — they must share one session cache (two instances = sign-out/rename leaves the navbar/profile on a stale session). Import client helpers from there, not from a `lib/` path that doesn't exist.
+- **Route protection**: `src/proxy.ts` (Next 16 renamed the `middleware` convention to `proxy` — the function must be exported as `proxy`, not `middleware`) guards `/profile` and `/destinations/:path+` (detail + edit; `/destinations` list stays public) using `getSessionCookie(request)` from `better-auth/cookies` — presence-only check, no DB in proxy. **Do not replace it with a `cookie.name.startsWith("better-auth.session_token")` check**: behind https better-auth prefixes the cookie with `__Secure-`, so a bare-name check rejects valid production (Vercel) sessions and bounces logged-in users to `/sign-in` (this shipped as a real bug). On rejection it redirects to `/sign-in?next=<path>`; the sign-in page reads `?next=` (same-site paths only) and returns there after login — keep both halves in sync. Client helpers `signIn`/`signUp`/`signOut`/`useSession` come from `auth-client.ts`.
 - Auth pages: all live in `(main)` with Navbar/Footer (sign-up: `signUp.email` + Google; sign-in: `signIn.email` with `rememberMe` + Google; profile: `useSession` + `useBookings` stats, Edit Profile Dialog via `authClient.updateUser({ name })`, Sign Out via `authClient.signOut()`). Shared `GoogleIcon` lives in `src/components/auth/google-icon.tsx` (lucide has no brand icons).
 
 ## External Express API (:8000)
