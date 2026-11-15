@@ -13,7 +13,7 @@ const authClient = new MongoClient(
     ? authUri
     : "mongodb://localhost:27017",
 );
-const authDb = authClient.db("wanderlust-db");
+const authDb = authClient.db("wanderlust");
 
 export const auth = betterAuth({
   emailAndPassword: {
