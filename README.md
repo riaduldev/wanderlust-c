@@ -44,7 +44,7 @@ cp .env.example .env
 | `MONGODB_URI` | `/api/travel-packages` route | Mongo connection string |
 | `MONGODB_DB` | `/api/travel-packages` route | Optional db name override |
 | `DESTINATIONS_API_URL` | Server-side fetches | Express API base URL |
-| `NEXT_PUBLIC_DESTINATIONS_API_URL` | Client components | Express API base URL |
+| `NEXT_PUBLIC_API_URL` | Client components | Express API base URL |
 | `BETTER_AUTH_DB_URI` | better-auth | Mongo URI for the `wanderlust-db` auth database |
 | `BETTER_AUTH_SECRET` | better-auth | Session signing secret (auto-read) |
 | `BETTER_AUTH_URL` | better-auth | App base URL, e.g. `http://localhost:3000` (auto-read) |

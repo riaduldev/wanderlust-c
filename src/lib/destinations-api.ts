@@ -11,8 +11,11 @@ export const FALLBACK_DESTINATION_IMAGES = [
   "/images/destinations/image6.png",
 ] as const;
 
+// Prefer the server-only var, then the public one (set on Vercel), then local.
 const DESTINATIONS_API_URL =
-  process.env.DESTINATIONS_API_URL ?? "http://localhost:8000";
+  process.env.DESTINATIONS_API_URL ??
+  process.env.NEXT_PUBLIC_API_URL ??
+  "http://localhost:8000";
 
 function toDestinationList(payload: unknown): Destination[] {
   if (Array.isArray(payload)) {
