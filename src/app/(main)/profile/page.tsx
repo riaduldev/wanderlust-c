@@ -17,6 +17,7 @@ import {
 
 import { authClient, useSession } from "@/app/api/auth/[...all]/auth-client";
 import { useBookings } from "@/hooks/use-bookings";
+import { clearApiJwt } from "@/lib/api-jwt";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -156,6 +157,7 @@ export default function ProfilePage() {
 
   async function handleSignOut() {
     await authClient.signOut();
+    clearApiJwt();
     toast.add({ type: "success", title: "Signed out" });
     router.replace("/sign-in");
   }

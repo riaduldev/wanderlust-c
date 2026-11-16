@@ -22,7 +22,7 @@ import {
   EmptyTitle,
 } from "@/components/ui/empty";
 import { toast } from "@/components/ui/toast";
-import { FALLBACK_DESTINATION_IMAGES } from "@/lib/destinations-api";
+import { FALLBACK_DESTINATION_IMAGES } from "@/lib/fallback-images";
 import { useBookings } from "@/hooks/use-bookings";
 import { formatDepartureDate, type Booking } from "@/lib/bookings";
 

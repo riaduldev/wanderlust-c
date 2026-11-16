@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "@/components/ui/toast";
+import { getApiJwt } from "@/lib/api-jwt";
 import {
   parseTravelPackageInput,
   TRAVEL_PACKAGE_CATEGORIES,
@@ -67,10 +68,22 @@ export function AddTravelPackageForm() {
         return;
       }
 
+      const token = await getApiJwt().catch(() => null);
+
+      if (!token) {
+        toast.add({
+          title: "Sign in required",
+          description: "Your session has expired. Please sign in again.",
+          type: "error",
+        });
+        return;
+      }
+
       const response = await fetch(`${API_BASE_URL}/add-destination`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(payload),
       });

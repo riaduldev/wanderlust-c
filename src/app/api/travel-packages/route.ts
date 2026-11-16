@@ -8,10 +8,39 @@ import {
   buildTravelPackageQuery,
   parseTravelPackageFilters,
 } from "@/lib/travel-packages-query";
+import { verifyRequestJwt } from "@/lib/jwt";
 import { TravelPackageModel } from "@/models/travel-package";
+
+// JWT gate for every handler: 503 when unconfigured (fail-closed), 401 on a
+// missing/invalid `Authorization: Bearer <jwt>` header.
+async function requireApiJwt(
+  request: Request,
+): Promise<NextResponse | null> {
+  if (!process.env.JWT_SECRET) {
+    return NextResponse.json(
+      { message: "API auth is not configured. Set JWT_SECRET in .env." },
+      { status: 503 },
+    );
+  }
+
+  const claims = await verifyRequestJwt(request);
+  if (!claims) {
+    return NextResponse.json(
+      { message: "Authentication required." },
+      { status: 401 },
+    );
+  }
+
+  return null;
+}
 
 export async function GET(request: Request) {
   await connection();
+
+  const denied = await requireApiJwt(request);
+  if (denied) {
+    return denied;
+  }
 
   const parsed = parseTravelPackageFilters(new URL(request.url).searchParams);
 
@@ -52,6 +81,11 @@ export async function GET(request: Request) {
 
 export async function POST(request: Request) {
   await connection();
+
+  const denied = await requireApiJwt(request);
+  if (denied) {
+    return denied;
+  }
 
   let body: unknown;
 

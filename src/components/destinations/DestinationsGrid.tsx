@@ -3,7 +3,7 @@
 import { useMemo, useState } from "react";
 
 import { DestinationCard } from "@/components/destinations/DestinationCard";
-import { FALLBACK_DESTINATION_IMAGES } from "@/lib/destinations-api";
+import { FALLBACK_DESTINATION_IMAGES } from "@/lib/fallback-images";
 import type { Destination } from "@/types/destination";
 
 const selectClassName =

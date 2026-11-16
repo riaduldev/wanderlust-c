@@ -28,6 +28,7 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "@/components/ui/toast";
+import { getApiJwt } from "@/lib/api-jwt";
 import { TRAVEL_PACKAGE_CATEGORIES } from "@/lib/travel-package";
 import type { Destination } from "@/types/destination";
 
@@ -78,12 +79,24 @@ export default function EditDestinationForm({
         description: String(formData.get("description") ?? ""),
       };
 
+      const token = await getApiJwt().catch(() => null);
+
+      if (!token) {
+        toast.add({
+          title: "Sign in required",
+          description: "Your session has expired. Please sign in again.",
+          type: "error",
+        });
+        return;
+      }
+
       const response = await fetch(
         `${API_BASE_URL}/update-destination/${destination._id}`,
         {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
           },
           body: JSON.stringify(payload),
         },
@@ -123,10 +136,25 @@ export default function EditDestinationForm({
     setIsDeleting(true);
 
     try {
+      const token = await getApiJwt().catch(() => null);
+
+      if (!token) {
+        toast.add({
+          title: "Sign in required",
+          description: "Your session has expired. Please sign in again.",
+          type: "error",
+        });
+        setDeleteOpen(false);
+        return;
+      }
+
       const response = await fetch(
         `${API_BASE_URL}/delete-destination/${destination._id}`,
         {
           method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         },
       );
 

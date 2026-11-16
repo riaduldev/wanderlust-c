@@ -1,21 +1,19 @@
+import { signApiJwt } from "@/lib/jwt";
 import type { Destination } from "@/types/destination";
-
-// Seeded destination image URLs point at fake hosts, so the next/image
-// optimizer answers 500 — cards fall back to these local images on error.
-export const FALLBACK_DESTINATION_IMAGES = [
-  "/images/destinations/image1.png",
-  "/images/destinations/image2.png",
-  "/images/destinations/image3.png",
-  "/images/destinations/image4.png",
-  "/images/destinations/image5.png",
-  "/images/destinations/image6.png",
-] as const;
 
 // Prefer the server-only var, then the public one (set on Vercel), then local.
 const DESTINATIONS_API_URL =
   process.env.DESTINATIONS_API_URL ??
   process.env.NEXT_PUBLIC_API_URL ??
   "http://localhost:8000";
+
+// SSR fetches have no browser session, so they authenticate to the Express
+// API with a short-lived service JWT signed with the shared JWT_SECRET.
+// Throws (fail-closed) when JWT_SECRET is missing.
+async function serviceAuthHeaders(): Promise<Record<string, string>> {
+  const token = await signApiJwt({ sub: "service", typ: "service" }, "5m");
+  return { Authorization: `Bearer ${token}` };
+}
 
 function toDestinationList(payload: unknown): Destination[] {
   if (Array.isArray(payload)) {
@@ -43,6 +41,7 @@ function toDestinationList(payload: unknown): Destination[] {
 export async function getDestinations(): Promise<Destination[]> {
   const response = await fetch(`${DESTINATIONS_API_URL}/destinations`, {
     cache: "no-store",
+    headers: await serviceAuthHeaders(),
   });
 
   if (!response.ok) {
