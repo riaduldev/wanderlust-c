@@ -24,5 +24,5 @@ export function proxy(request: NextRequest) {
 export const config = {
   // Only routes behind auth: profile and destination detail/edit pages.
   // `/destinations` itself stays public, `:path+` requires 1+ segments.
-  matcher: ["/profile", "/destinations/:path+", "add-destinations"],
+  matcher: ["/profile", "/destinations/:path+", "add-destinations", "bookings"],
 };
