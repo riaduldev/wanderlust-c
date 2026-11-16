@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 
 import { getDestinationById } from "@/lib/destinations-api";
 import EditDestinationForm from "@/components/destinations/EditDestinationForm";
+import { requireSession } from "@/lib/require-session";
 
 
 type PageProps = {
@@ -13,6 +14,8 @@ export default async function EditDestinationPage({
   params,
 }: PageProps) {
   const { id } = await params;
+
+  await requireSession(`/destinations/${id}/edit`);
 
   const destination = await getDestinationById(id);
 

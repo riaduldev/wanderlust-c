@@ -20,14 +20,22 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 import { getDestinationById } from "@/lib/destinations-api";
 import { formatDepartureDate } from "@/lib/bookings";
+import { requireSession } from "@/lib/require-session";
 
 type PageProps = {
   params: Promise<{ id: string }>;
 };
 
-export default function DestinationDetailPage({
+export default async function DestinationDetailPage({
   params,
 }: PageProps) {
+  // Auth check OUTSIDE <Suspense>: a redirect() thrown inside a streaming
+  // boundary still navigates the browser (via RSC payload) but the HTTP
+  // status is already committed as 200. Here it yields a real 307 before
+  // any HTML streams.
+  const { id } = await params;
+  await requireSession(`/destinations/${id}`);
+
   return (
     <Suspense fallback={<DetailSkeleton />}>
       <DestinationDetail params={params} />

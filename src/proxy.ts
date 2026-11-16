@@ -22,7 +22,9 @@ export function proxy(request: NextRequest) {
 }
 
 export const config = {
-  // Only routes behind auth: profile and destination detail/edit pages.
-  // `/destinations` itself stays public, `:path+` requires 1+ segments.
-  matcher: ["/profile", "/destinations/:path+", "add-destinations", "bookings"],
+  // Routes behind auth: profile, destination detail/edit, add + bookings.
+  // `/destinations` list stays public, `:path+` requires 1+ segments.
+  // Every entry MUST start with "/" — a bare path invalidates the whole
+  // config (dev server crash + build failure + no route protected).
+  matcher: ["/profile", "/destinations/:path+", "/add-destinations", "/bookings"],
 };
