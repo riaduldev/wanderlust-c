@@ -15,11 +15,11 @@ import {
 } from "lucide-react";
 
 import { BookNowButton } from "@/components/book-now-button";
+import { DestinationHeroImage } from "@/components/destinations/destination-hero-image";
 import { Skeleton } from "@/components/ui/skeleton";
 
 import { getDestinationById } from "@/lib/destinations-api";
 import { formatDepartureDate } from "@/lib/bookings";
-import Image from "next/image";
 
 type PageProps = {
   params: Promise<{ id: string }>;
@@ -85,20 +85,12 @@ async function DestinationDetail({
 
       {/* Hero Image */}
       <div className="relative h-[230px] w-full overflow-hidden bg-gray-100 sm:h-[320px] lg:h-[400px]">
-
-  <Image
-    src={
-      destination.imageUrl ||
-      "/images/destinations/image1.png"
-    }
-    alt={destination.destinationName}
-    fill
-    priority
-    sizes="100vw"
-    className="object-cover"
-  />
-
-</div>
+        <DestinationHeroImage
+          src={destination.imageUrl || "/images/destinations/image1.png"}
+          alt={destination.destinationName}
+          fallbackSrc="/images/destinations/image1.png"
+        />
+      </div>
 
       {/* Main Content */}
       <div className="mt-6 grid grid-cols-1 gap-8 lg:grid-cols-[1fr_320px]">
